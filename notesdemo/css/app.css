@@ -1,6 +1,6 @@
 html, body {
   margin: 0;
-  padding: 0.5rem;
+  padding: 0;
 }
 
 h1 {
@@ -14,27 +14,35 @@ p {
 body {
     font-size: 1rem;
     background: #fff;
-	padding: 0;
 }
+
 header {
 	height: 36px;
-	margin-bottom: 10px;
-	background-color: rgb(228, 152, 54);
+	background-color: #F6A031;
 	padding: 7px 7px 7px 15px;
+    margin-bottom: 5px;
 }
+
 .app_title {
 	font-weight: 700;
 	font-size: 36px;
 	line-height: 36px;
+    color: #2A2A2A;
 }
-.new_note {
+
+.toggle_note_input {
 	float: right;
 	height: 36px;
 	width:  36px;
 }
+
+.note_input_section {
+    padding: 5px;
+    background-color: red;
+}
+
 .note_input {
 	width:100%;
-	height:50vw;
 	font: 12pt "Arial Black", Gadget, sans-serif
 }
 
@@ -42,10 +50,11 @@ ul.notes_container {
 	list-style-type: none;
 	background-color: #B1B1B1;
 	padding: 0px 0px 0px 10px;
+    margin: 0;
 }
 
 .note_listing {
-	background-color: #E9DDC6;
+	background-color: #E1E9D1;
 	padding: 10px;
 }
 
@@ -53,6 +62,7 @@ ul.notes_container {
 	margin: 0;
 	color: #113E3A;
 }
+
 .note_body {
 	margin: 0;
 	color: #242424;
