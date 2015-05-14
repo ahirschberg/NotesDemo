@@ -20,7 +20,7 @@ header {
 	height: 36px;
 	background-color: #F6A031;
 	padding: 7px 7px 7px 15px;
-    margin-bottom: 5px;
+	border-bottom: 3px solid rgb(239, 109, 39);
 }
 
 .app_title {
@@ -34,16 +34,25 @@ header {
 	float: right;
 	height: 36px;
 	width:  36px;
+    line-height: 36px;
+}
+
+.header_button {
+    text-align: center;
+    font-size: 20px;
+    border: 2px solid rgb(239, 109, 39);
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .note_input_section {
     padding: 5px;
-    background-color: red;
+    background-color: #F8C272;
 }
 
-.note_input {
-	width:100%;
-	font: 12pt "Arial Black", Gadget, sans-serif
+.note_body_input, .note_title_input {
+	width: 95%;
+	font:  12pt "Arial Black", Gadget, sans-serif;
 }
 
 ul.notes_container {

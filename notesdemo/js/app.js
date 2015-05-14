@@ -13,22 +13,26 @@ window.addEventListener('DOMContentLoaded', function() {
 
 $(document).ready(function () {
     var notes = new_notes_obj();
+    var ui    = new_ui_obj();
+
     $('.toggle_note_input').click(function () {
-        notes.toggle_note_input();
+        ui.toggle_note_input();
     });
     $('.submit_note').click(function () {
         notes.submit_note();
+        ui.toggle_note_input();
+        ui.clear_note_inputs();
     });
 });
 
 var new_notes_obj = function () {
     return {
-        toggle_note_input: function () {
-            var $input_area = $('.note_input_section');
-            $input_area.toggle();
-        },
         submit_note: function () {
-            this.append_note({body: $('.note_input').val()});
+            this.append_note(
+            {
+                title: $('.note_title_input').val(),
+                body: $('.note_body_input').val()
+            });
         },
         append_note: function (note_obj) {
             var li = $('<li class="note_listing"></li>');
@@ -37,4 +41,21 @@ var new_notes_obj = function () {
             li.appendTo('.notes_container');
         }
     }
-}
+};
+
+var new_ui_obj = function () {
+    return {
+        clear_note_inputs: function () {
+            $('.note_title_input').val('');
+            $('.note_body_input').val('');
+        },
+        toggle_note_input: function () {
+            var $input_area = $('.note_input_section');
+            $input_area.toggle();
+            this.update_new_note_button($input_area.css('display') != 'none');
+        },
+        update_new_note_button: function (visible) {
+            $('.toggle_note_input').text(visible ? '-' : '+');
+        }
+    };
+};

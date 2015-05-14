@@ -18,11 +18,12 @@
         <!--
             Put the button before the heading, so that when it is floated left the two elements are on the same line.
         -->
-            <button class="toggle_note_input">+</button>
+            <div class="toggle_note_input header_button">+</div>
             <span class="app_title" data-l10n-id="app_title">APP TITLE</span>            
         </header>
-        <section class="note_input_section">
-            <textarea class="note_input" placeholder="Enter a note"></textarea>
+        <section class="note_input_section" hidden>
+            <input type="text" placeholder="Note title" class="note_title_input">
+            <textarea class="note_body_input" placeholder="Enter a note"></textarea>
             <button class="submit_note">Done!</button>
         </section>
         <section>
