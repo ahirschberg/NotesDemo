@@ -11,9 +11,11 @@ window.addEventListener('DOMContentLoaded', function() {
   var translate = navigator.mozL10n.get;
 });
 
+var NOTESDEMO = {};
+
 $(document).ready(function () {
-    var notes = new_notes_obj();
-    var ui    = new_ui_obj();
+    var notes = NOTESDEMO.notes = new_notes_obj();
+    var ui    = NOTESDEMO.ui = new_ui_obj();
 
     $('.toggle_note_input').click(function () {
         ui.toggle_note_input();
@@ -36,8 +38,15 @@ var new_notes_obj = function () {
         },
         append_note: function (note_obj) {
             var li = $('<li class="note_listing"></li>');
+            li.append('<div class="trash_button"><i class="fa fa-trash"></i></div>');
             li.append('<h2 class="note_title">' + (note_obj.title || 'Untitled Note') + '</h2>');
-            li.append('<p class="note_body">' + note_obj.body + '</p>');
+            
+            var note_body = '<p class="note_body ' +
+                (note_obj.body ? '' : 'note_body_empty') + '">' + 
+                (note_obj.body || '') +
+                '</p>'; // clean this up
+            
+            li.append(note_body);
             li.appendTo('.notes_container');
         }
     }
@@ -55,7 +64,13 @@ var new_ui_obj = function () {
             this.update_new_note_button($input_area.css('display') != 'none');
         },
         update_new_note_button: function (visible) {
-            $('.toggle_note_input').text(visible ? '-' : '+');
+            if (visible) {
+                $('.toggle_note_input i').removeClass();
+                $('.toggle_note_input i').text('-');
+            } else {
+                $('.toggle_note_input i').text('');
+                $('.toggle_note_input i').addClass('fa fa-pencil fa-lg');
+            }
         }
     };
 };

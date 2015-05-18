@@ -6,6 +6,7 @@
         <meta name="description" content="A privileged app stub">
         <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" href="css/font-awesome-4.3.0/css/font-awesome.min.css">
 
         <script type="text/javascript" src="js/libs/jquery-2.1.4.min.js" defer></script>
         <script type="text/javascript" src="js/app.js" defer></script>
@@ -18,20 +19,16 @@
         <!--
             Put the button before the heading, so that when it is floated left the two elements are on the same line.
         -->
-            <div class="toggle_note_input header_button">+</div>
+            <div class="toggle_note_input header_button"><i class="fa fa-pencil"></i></div>
             <span class="app_title" data-l10n-id="app_title">APP TITLE</span>            
         </header>
-        <section class="note_input_section" hidden>
+        <section class="note_input_section" style="display: none;">
             <input type="text" placeholder="Note title" class="note_title_input">
             <textarea class="note_body_input" placeholder="Enter a note"></textarea>
             <button class="submit_note">Done!</button>
         </section>
         <section>
             <ul class="notes_container">
-                <li class="note_listing">
-                    <h2 class="note_title">Sample note title</h2>
-                    <p class="note_body">Sample note text goes here! This is where your notes would display, like if you wanted to write a shopping list or a cute girl's phone number!</p>
-                </li>
         </section>
     </body>
 </html>

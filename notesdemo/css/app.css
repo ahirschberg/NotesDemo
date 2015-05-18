@@ -35,6 +35,7 @@ header {
 	height: 36px;
 	width:  36px;
     line-height: 36px;
+    color: #2A0303;
 }
 
 .header_button {
@@ -45,14 +46,34 @@ header {
     cursor: pointer;
 }
 
+.trash_button {
+    text-align: center;
+    font-size: 20px;
+    border: 2px solid rgb(40, 133, 242);
+    border-radius: 50%;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    float: right;
+    line-height: 30px;
+}
+
 .note_input_section {
     padding: 5px;
     background-color: #F8C272;
 }
 
-.note_body_input, .note_title_input {
+.note_title_input, .note_body_input {
 	width: 95%;
 	font:  12pt "Arial Black", Gadget, sans-serif;
+}
+
+.note_title_input {
+    height: 30px;
+}
+
+.note_body_input {
+    height: 70px;
 }
 
 ul.notes_container {
@@ -67,12 +88,20 @@ ul.notes_container {
 	padding: 10px;
 }
 
-.note_title {
+.note_title { /* it's interesting that this auto sets width to work with the trash button */
 	margin: 0;
 	color: #113E3A;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .note_body {
 	margin: 0;
 	color: #242424;
+}
+
+.note_body_empty:before {
+    color: #535353;
+    font-style: italic;
+    content: "No text :(";
 }
