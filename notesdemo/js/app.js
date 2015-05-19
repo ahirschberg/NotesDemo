@@ -18,9 +18,11 @@ $(document).ready(function () {
     var notes_storage = NOTESDEMO.notes_storage = new_notes_storage_manager();
     var notes_make    = NOTESDEMO.notes_make    = new_notes_make_manager(ui, notes_storage);
     
-    notes_storage.retrieve_all_notes().forEach(function (obj) {
-        obj && ui.append_note_to_list(obj);
-    }); // should be moved to object
+    var notes_hash = notes_storage.notes_hash;
+    Object.keys(notes_hash).forEach (function (key) {
+        console.log(notes_hash[key]);
+        ui.append_note_to_list(notes_hash[key], key);
+    });
     
     $('.toggle_note_input').click(function () {
         ui.toggle_note_input();
@@ -36,59 +38,65 @@ $(document).ready(function () {
         }
     });
     $('.trash_button').click(function () {
-        var note_full_id = $(this).parent().attr('id');
-        notes_storage.delete_note(note_full_id);
+        var note_element = $(this).parent();
+        var note_index = notes_storage.get_index_from_id(note_element.attr('id'));
+        console.log('deleting note with index ' + note_index);
+        notes_storage.delete_note(note_index);
     });
 });
 
 var new_notes_make_manager = function (ui, notes_storage) {
     return {
         new_note: function () {
-            var note_data = ui.get_note_inputs();
-            var index = notes_storage.write_note(note_data);
-            note_data.index = index;
-            ui.append_note_to_list(note_data);
+            var note_obj = ui.get_note_inputs();
+            var index = notes_storage.add_note(note_obj);
+            ui.append_note_to_list(note_obj, index);
         }
     };
 };
 
 var new_notes_storage_manager = function () {
-    var notes_size = localStorage.getItem('notes_size');
-    if (!notes_size || parseInt(notes_size) != notes_size) {
-        console.error('Notes size was not retrieved, defaulting to zero.  If this is the first run, ignore this message.');
-        localStorage.setItem('notes_size', 0);
+    var notes_hash = JSON.parse(localStorage.getItem('notes_hash'));
+    var notes_max_index = parseInt(localStorage.getItem('notes_max_index')); 
+
+    if (!notes_hash) {
+        console.error('Notes hash was not retrieved, defaulting to {}.  If this is the first run, ignore this message.');
+        notes_hash = {};
+        localStorage.setItem('notes_hash', JSON.stringify(notes_hash));
     }
-    delete notes_size;
+    if (!notes_max_index || typeof notes_max_index != 'number') { // NaN is a number :P
+        console.error('Notes max index was not retrieved, defaulting to 0.  If this is the first run, ignore this message.');
+        notes_max_index = 0;
+        localStorage.setItem('notes_max_index', JSON.stringify(notes_max_index));
+
+    }
+    var new_note_key = function () { return notes_max_index += 1; }
+    var update_ls_hash = function () {
+        localStorage.setItem('notes_hash', JSON.stringify(notes_hash));
+        localStorage.setItem('notes_max_index', JSON.stringify(notes_max_index));
+    }
+    var id_rxp = /note_(\d+)/;
     
     return {
-        get_notes_size: function () {
-            return parseInt(localStorage.getItem('notes_size'));
-        },
-        write_note: function (note_obj) {
-            var curr_index = this.get_notes_size();
-            localStorage.setItem('note_' + curr_index, JSON.stringify(note_obj));
-            localStorage.setItem('notes_size', curr_index + 1);
-            return curr_index; // todo fix this message structure
+        add_note: function (note_obj) {
+            var index = new_note_key();
+            notes_hash[index] = note_obj;
+            update_ls_hash();
+            
+            return index;
         },
         retrieve_note: function (index) {
-            var note_obj = JSON.parse(localStorage.getItem('note_' + index));
-            if (!note_obj) {
-                console.warn('could not parse not object with index ' + index);
-                return null;
-            }
-            note_obj.index = index;
-            return note_obj;
+            return notes_hash[index];
         },
-        delete_note: function (full_id) { // insecure, allows malicious user to delete anything in local storage.
-            localStorage.removeItem(full_id);
+        delete_note: function (index) {
+            delete notes_hash[index];
+            update_ls_hash();
         },
-        retrieve_all_notes: function () {
-            var res = [];
-            for (var i = 0; i < this.get_notes_size(); i++) {
-                res.push(this.retrieve_note(i));
-            }
-            return res;
-        }
+        get_index_from_id: function (id) {
+            var match = id_rxp.exec(id);
+            return parseInt(match[1]);
+        },
+        notes_hash: notes_hash
     };
 }
 
@@ -115,8 +123,8 @@ var new_ui_obj = function () {
                 $('.toggle_note_input i').addClass('fa fa-pencil');
             }
         },
-        append_note_to_list: function (note_obj) {
-            var li = $('<li class="note_listing" id="note_' + note_obj.index + '"></li>');
+        append_note_to_list: function (note_obj, index) {
+            var li = $('<li class="note_listing" id="note_' + index + '"></li>');
             li.append('<div class="trash_button"><i class="fa fa-trash"></i></div>');
             li.append('<h2 class="note_title">' + (note_obj.title || 'Untitled Note') + '</h2>');
             
