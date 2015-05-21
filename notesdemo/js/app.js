@@ -159,7 +159,7 @@ var new_note_disp_ui_obj = function (notes_storage_mgr) {
 
             // append trash button
             var $trash = $('<div class="trash_button"><i class="fa fa-trash"></i></div>')
-                .click(trash_click_fn); // TODO check if this actually works
+                .click(trash_click_fn); // It's interesting that this works without encapsulation
             $li.append($trash);
 
             // append note title
