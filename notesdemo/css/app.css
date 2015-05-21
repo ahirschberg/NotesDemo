@@ -21,6 +21,7 @@ header {
 	background-color: #F6A031;
 	padding: 7px 7px 7px 15px;
 	border-bottom: 3px solid rgb(239, 109, 39);
+    -moz-user-select: none; /* prevent the user from highlighting the app title */
 }
 
 .app_title {
