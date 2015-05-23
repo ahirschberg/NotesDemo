@@ -41,10 +41,16 @@ $(document).ready(function () {
     });
 });
 
+function debug_temp_add_n_notes(notes_make, n) {
+    for (var i = 0; i < n; i++) {
+        notes_make.new_note({title: ('generated note ' + i), body: ('I can do it! I can do it ' + i + ' times!')});
+    }
+}
+
 var new_notes_make_manager = function (ui, notes_storage) {
     return {
-        new_note: function () {
-            var note_obj = ui.note_input.get_note_inputs();
+        new_note: function (note_obj) {
+            var note_obj = note_obj || ui.note_input.get_note_inputs(); // TODO refactor? sorta hidden dependency
             var index = notes_storage.add_note(note_obj);
             ui.note_disp.append_note_to_list(note_obj, index);
         }
@@ -158,9 +164,14 @@ var new_note_disp_ui_obj = function (notes_storage_mgr) {
             var $li = $('<li class="note_listing" id="note_' + index + '"></li>');
 
             // append trash button
-            var $trash = $('<div class="trash_button"><i class="fa fa-trash"></i></div>')
+            var $trash = $('<div class="notes_button notes_trash_button"><i class="fa fa-trash"></i></div>')
                 .click(trash_click_fn); // It's interesting that this works without encapsulation
             $li.append($trash);
+
+            // append edit button WIP
+            var $edit = $('<div class="notes_button notes_edit_button"><i class="fa fa-pencil"></i></div>')
+                .click(function () { alert('now pretend you\'e editing!') }); // It's interesting that this works without encapsulation
+            $li.append($edit);
 
             // append note title
             $li.append('<h2 class="note_title">' + (note_obj.title || 'Untitled Note') + '</h2>');
@@ -176,7 +187,7 @@ var new_note_disp_ui_obj = function (notes_storage_mgr) {
             $li.append(note_body);
 
             // add to the DOM inside the notes list
-            $li.appendTo('.notes_container');
+            $li.prependTo('.notes_container');
 
             console.log('Appended note with index ' + index);
         },
