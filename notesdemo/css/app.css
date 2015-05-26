@@ -96,7 +96,12 @@ ul.notes_container {
 .note_listing {
     background-color: #E1E9D1;
     padding: 10px;
+    border-top: 1px solid #B5C597;
 }
+
+/*.note_listing:nth-child(1) {
+    border: none;
+}*/
 
 .note_title { /* it's interesting that this auto sets width to work with the trash button */
     margin: 0;

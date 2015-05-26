@@ -29,20 +29,15 @@ $(document).ready(function () {
     $('.toggle_note_input').click(function () {
         ui.note_input.toggle_note_input();
     });
+    
+    var submit_func = ui.note_input.create_note_submit_onclick(notes_make);
     $('.submit_note').click(function () {
-        if (ui.note_input.check_inputs_filled()) {
-            notes_make.new_note();
-            
-            ui.note_input.toggle_note_input();
-            ui.note_input.clear_note_inputs();
-        } else {
-            alert('Please fill out a note!');
-        }
+        submit_func.apply(this, arguments)
     });
 });
 
 function debug_temp_add_n_notes(notes_make, n) {
-    for (var i = 0; i < n; i++) {
+    for (var i = 1; i <= n; i++) {
         notes_make.new_note({title: ('generated note ' + i), body: ('I can do it! I can do it ' + i + ' times!')});
     }
 }
@@ -50,7 +45,6 @@ function debug_temp_add_n_notes(notes_make, n) {
 var new_notes_make_manager = function (ui, notes_storage) {
     return {
         new_note: function (note_obj) {
-            var note_obj = note_obj || ui.note_input.get_note_inputs(); // TODO refactor? sorta hidden dependency
             var index = notes_storage.add_note(note_obj);
             ui.note_disp.append_note_to_list(note_obj, index);
         }
@@ -66,7 +60,7 @@ var new_notes_storage_manager = function () {
         notes_hash = {};
         localStorage.setItem('notes_hash', JSON.stringify(notes_hash));
     }
-    if (!notes_max_index || typeof notes_max_index != 'number') { // NaN is a number :P
+    if (!notes_max_index || typeof notes_max_index != 'number') { // NaN is a number, so you also have to check truthiness
         console.error('Notes max index was not retrieved, defaulting to 0.  If this is the first run, ignore this message.');
         notes_max_index = 0;
         localStorage.setItem('notes_max_index', JSON.stringify(notes_max_index));
@@ -94,11 +88,14 @@ var new_notes_storage_manager = function () {
             delete notes_hash[index];
             update_ls_hash();
         },
+        update_note: function (index, new_note_obj) {
+            notes_hash[index] = new_note_obj;
+        },
         get_index_from_id: function (id) {
             var match = id_rxp.exec(id);
             return parseInt(match[1]);
         },
-        notes_hash: notes_hash
+        notes_hash: notes_hash // TODO clone this?
     };
 }
 
@@ -107,19 +104,17 @@ var new_ui_manager_obj = function (args) {
     var notes_storage_mgr = args.notes_storage_mgr;
 
     var ui_handlers = {
-        note_input: new_note_input_ui_obj(),
+        note_input: new_add_note_ui_obj(),
         note_disp: new_note_disp_ui_obj(notes_storage_mgr)
     };
 
     return ui_handlers;
 };
 
-var new_note_input_ui_obj = function () {
 
+var new_add_note_ui_obj = function () {
+    var input_validate = new_validate_note_input_obj({title_input: '.note_title_input', body_input: '.note_body_input'});
     return {
-        check_inputs_filled: function () {
-            return $('.note_title_input').val() || $('.note_body_input').val();
-        },
         clear_note_inputs: function () {
             $('.note_title_input').val('');
             $('.note_body_input').val('');
@@ -138,16 +133,55 @@ var new_note_input_ui_obj = function () {
                 $('.toggle_note_input i').addClass('fa fa-pencil');
             }
         },
-        get_note_inputs: function () {
-            return {
-                title: $('.note_title_input').val(),
-                body: $('.note_body_input').val()
-            };
+        create_note_submit_onclick: function (notes_make) { // woah, the function returned closes over notes_make! neat!
+            var that = this;
+            return function () {
+                if (input_validate.check_inputs_filled()) {
+                    var note_obj = input_validate.get_note_obj_from_inputs();
+                    notes_make.new_note(note_obj);
+                    
+                    that.toggle_note_input();
+                    that.clear_note_inputs();
+                } else {
+                    alert('Please fill out a note!');
+                }
+            }
         }
     };
 };
 
+var new_validate_note_input_obj = function (selectors) {
+    return {
+        get_note_obj_from_inputs: function () {
+            return {
+                title: $(selectors.title_input).val(), // '.note_title_input'
+                body:  $(selectors.body_input).val() // '.note_body_input'
+            };
+        },
+        check_inputs_filled: function () {
+            return $(selectors.title_input).val() || $(selectors.body_input).val();
+        }
+    };
+}
+
 var new_note_disp_ui_obj = function (notes_storage_mgr) {
+    var edit_click_fn = function () {
+        var $note_element = $(this).parent();
+        var note_index = notes_storage_mgr.get_index_from_id($note_element.attr('id'));
+        var note_obj = notes_storage_mgr.retrieve_note(note_index);
+        
+        // is it bad to reuse the classes from the new note input? probably...
+        var $edit_div = $('<div class="edit_note"></div>');
+        $('<input type="text" class="note_title_input">').val(note_obj.title).appendTo($edit_div);
+        $('<textarea class="note_body_input"></textarea>').val(note_obj.body).appendTo($edit_div);
+        $('<button class="submit_note_edit">Done</button>')
+            .click()
+            .appendTo($edit_div)
+        
+        $note_element.children().hide();
+        $edit_div.appendTo($note_element);
+    };
+    
     var trash_click_fn = function () {
         var $note_element = $(this).parent();
         var note_index = notes_storage_mgr.get_index_from_id($note_element.attr('id'));
@@ -162,7 +196,7 @@ var new_note_disp_ui_obj = function (notes_storage_mgr) {
     return {
         append_note_to_list: function (note_obj, index) {
             var $li = $('<li class="note_listing" id="note_' + index + '"></li>');
-
+            
             // append trash button
             var $trash = $('<div class="notes_button notes_trash_button"><i class="fa fa-trash"></i></div>')
                 .click(trash_click_fn); // It's interesting that this works without encapsulation
@@ -170,7 +204,7 @@ var new_note_disp_ui_obj = function (notes_storage_mgr) {
 
             // append edit button WIP
             var $edit = $('<div class="notes_button notes_edit_button"><i class="fa fa-pencil"></i></div>')
-                .click(function () { alert('now pretend you\'e editing!') }); // It's interesting that this works without encapsulation
+                .click(edit_click_fn); // It's interesting that this works without encapsulation
             $li.append($edit);
 
             // append note title
