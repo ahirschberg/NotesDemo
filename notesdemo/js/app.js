@@ -8,7 +8,6 @@ window.addEventListener('DOMContentLoaded', function() {
   // https://developer.mozilla.org/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
   'use strict';
 
-  var translate = navigator.mozL10n.get;
 });
 
 var NOTESDEMO = {};
@@ -25,21 +24,15 @@ $(document).ready(function () {
       return this;
     };
     
-    var notes_storage = NOTESDEMO.notes_storage = new_notes_storage_manager();
-    var ui            = NOTESDEMO.ui            = new_ui_manager_obj({notes_storage_mgr: notes_storage});
-    var notes_make    = NOTESDEMO.notes_make    = new_notes_make_manager(ui, notes_storage);
+    var notes_storage    = NOTESDEMO.notes_storage    = new_notes_storage_manager();
+    var notes_ui_manager = NOTESDEMO.notes_ui_manager = new_ui_manager_obj({notes_storage_mgr: notes_storage});
 
     var notes_store = notes_storage.notes_store;
     Object.keys(notes_store).forEach (function (key) {
-        ui.note_disp.append_note_to_list(notes_store[key], key);
-    });
-
-    // set up click events, should this be moved into an object?
-    $('.toggle_note_input').click(function () {
-        ui.note_add_input.toggle_note_input();
+        notes_ui_manager.note_disp.append_note_to_list(notes_store[key], key);
     });
     
-    var submit_func = ui.note_add_input.create_note_submit_onclick(notes_make);
+    var submit_func = notes_ui_manager.note_add_input.create_note_submit_onclick(notes_ui_manager);
     $('.submit_note').click(function () {
         submit_func.apply(this, arguments)
     });
@@ -47,30 +40,21 @@ $(document).ready(function () {
 
 function debug_temp_add_n_notes(n) {
     for (var i = 1; i <= n; i++) {
-        NOTESDEMO.notes_make.new_note({title: ('generated note ' + i), body: ('I can do it! I can do it ' + i + ' times!')});
+        NOTESDEMO.notes_ui_manager.new_note({title: ('generated note ' + i), body: ('I can do it! I can do it ' + i + ' times!')});
     }
 }
 
-var new_notes_make_manager = function (ui, notes_storage) {
-    return {
-        new_note: function (note_obj) {
-            var index = notes_storage.add_note(note_obj);
-            ui.note_disp.append_note_to_list(note_obj, index);
-        }
-    };
-};
-
 var new_notes_storage_manager = function () {
     var notes_store = JSON.parse(localStorage.getItem('notes_store'));
-
+    
     if (!notes_store) {
-        console.error('Notes store was not retrieved, defaulting to [].  If this is the first run, ignore this message.');
+        console.warn('notes_store could not be retrieved from localStorage, defaulting to [].');
         notes_store = [];
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
     }
-    notes_store = notes_store.compact(); // compact is a function we added on earlier
+    notes_store = notes_store.compact(); // compact is a custom function we added earlier
     
-    var update_ls_store = function () {
+    var write_store = function () {
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
     }
     var id_rxp = /note_(\d+)/;
@@ -79,7 +63,7 @@ var new_notes_storage_manager = function () {
         add_note: function (note_obj) {
             var index = notes_store.length;
             notes_store[index] = note_obj;
-            update_ls_store();
+            write_store();
             
             return index;
         },
@@ -88,21 +72,20 @@ var new_notes_storage_manager = function () {
         },
         delete_note: function (index) {
             delete notes_store[index];
-            update_ls_store();
+            write_store();
         },
         update_note: function (index, new_note_obj) {
             notes_store[index] = new_note_obj;
-            update_ls_store();
+            write_store();
         },
         get_index_from_id: function (id) {
             var match = id_rxp.exec(id);
             return parseInt(match[1]);
         },
-        notes_store: notes_store // TODO clone this?
+        notes_store: notes_store
     };
 }
 
-// is having an object like this even a good idea?  Could be useful for de-hardcoding selector strings...
 var new_ui_manager_obj = function (args) {
     var notes_storage_mgr = args.notes_storage_mgr;
 
@@ -110,7 +93,12 @@ var new_ui_manager_obj = function (args) {
     var ui_handlers = {
         note_add_input:  new_add_note_ui_obj(),
         note_edit_input: note_edit_input,
-        note_disp:       new_note_disp_ui_obj({note_edit: note_edit_input, note_storage: notes_storage_mgr})
+        note_disp:       new_note_disp_ui_obj({note_edit: note_edit_input, note_storage: notes_storage_mgr}),
+        
+        new_note: function (note_obj) {
+            var index = notes_storage_mgr.add_note(note_obj);
+            this.note_disp.append_note_to_list(note_obj, index);
+        }
     };
 
     return ui_handlers;
@@ -149,12 +137,11 @@ var new_edit_note_ui_obj = function () {
                 var note_index = notes_storage_mgr.get_index_from_id($note_element.attr('id'));
                 var note_obj = notes_storage_mgr.retrieve_note(note_index);
 
-                // is it bad to reuse the classes from the new note input? probably...
-                var $edit_div = $('<div class="edit_note"></div>');
+                var $edit_div = $('<div class="edit_note" />');
                 $('<input type="text" class="note_input note_title_edit">')
                     .val(note_obj.title)
                     .appendTo($edit_div);
-                $('<textarea class="note_input note_body_edit"></textarea>')
+                $('<textarea class="note_input note_body_edit"/>')
                     .val(note_obj.body)
                     .appendTo($edit_div);
                 $('<button class="submit_note_edit">Done</button>')
@@ -168,28 +155,37 @@ var new_edit_note_ui_obj = function () {
     };
 };
 var new_add_note_ui_obj = function () {
+    // TODO ask kevin what he thinks about this
+    var toggle_note_input = function () {
+        var $input_area = $('.note_input_section');
+        $input_area.toggle();
+        update_new_note_button($input_area.css('display') != 'none');
+    };
+    var update_new_note_button = function (visible) {
+        if (visible) {
+            $('.toggle_note_input i').removeClass('fa-plus-circle');
+            $('.toggle_note_input i').addClass('fa-minus-circle');
+        } else {
+            $('.toggle_note_input i').removeClass('fa-minus-circle');
+            $('.toggle_note_input i').addClass('fa-plus-circle');
+        }
+    };
+    
+    // set up add note event
+    $('.toggle_note_input').click(function () {
+        toggle_note_input();
+    });
+    
     var input_validate = new_validate_note_input_obj({title_input: '.note_title_add', body_input: '.note_body_add'});
     return {
-        toggle_note_input: function () {
-            var $input_area = $('.note_input_section');
-            $input_area.toggle();
-            this.update_new_note_button($input_area.css('display') != 'none');
-        },
-        update_new_note_button: function (visible) {
-            if (visible) {
-                $('.toggle_note_input i').removeClass();
-                $('.toggle_note_input i').text('-');
-            } else {
-                $('.toggle_note_input i').text('');
-                $('.toggle_note_input i').addClass('fa fa-pencil');
-            }
-        },
-        create_note_submit_onclick: function (notes_make) { // woah, the function returned closes over notes_make! neat!
+        toggle_note_input: toggle_note_input,
+        update_new_note_button: update_new_note_button,
+        create_note_submit_onclick: function (notes_ui_manager) { // woah, the function returned closes over notes_make! neat!
             var that = this;
             return function (e) {
                 var note_obj = input_validate.get_note_obj_from_inputs();
                 if (!note_obj.isBlank()) {
-                    notes_make.new_note(note_obj);
+                    notes_ui_manager.new_note(note_obj);
                     
                     that.toggle_note_input();
                     input_validate.clear_note_inputs();
