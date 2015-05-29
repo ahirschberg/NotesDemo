@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  font-family: "Trebuchet MS", Helvetica, sans-serif
 }
 
 h1 {
@@ -73,16 +74,16 @@ header {
     background-color: #F8C272;
 }
 
-.note_title_input, .note_body_input {
+.note_input {
     width: 95%;
     font:  12pt "Arial Black", Gadget, sans-serif;
 }
 
-.note_title_input {
+.note_title_add, note_title_edit {
     height: 30px;
 }
 
-.note_body_input {
+.note_body_add, note_body_edit {
     height: 70px;
 }
 
@@ -96,24 +97,28 @@ ul.notes_container {
 .note_listing {
     background-color: #E1E9D1;
     padding: 10px;
-    border-top: 1px solid #B5C597;
+    border-top: 2px solid #B5C597;
 }
-
-/*.note_listing:nth-child(1) {
+.note_listing:nth-child(1) {
     border: none;
-}*/
+}
 
 .note_title { /* it's interesting that this auto sets width to work with the trash button */
     margin: 0;
     color: #113E3A;
     overflow: hidden;
-    text-overflow: ellipsis; }
+    text-overflow: ellipsis; 
+}
+.note_title_empty:before {
+    color: #4F5454;
+    font-style: italic;
+    content: "No Title :(";
+}
 
 .note_body {
     margin: 0;
     color: #242424;
 }
-
 .note_body_empty:before {
     color: #535353;
     font-style: italic;
