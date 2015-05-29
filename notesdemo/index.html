@@ -8,8 +8,7 @@
         <link rel="stylesheet" href="css/app.css">
         <link rel="stylesheet" href="css/font-awesome-4.3.0/css/font-awesome.min.css">
 
-        <script src="js/libs/jquery-2.1.4.min.js" defer></script>
-        <script src="js/app.js" defer></script>
+        <script data-main="js/req_loader" src="js/libs/require.js"></script>
     </head>
     <body>
         <header>
@@ -17,7 +16,7 @@
             Put the button before the heading, so that when it is floated left the two elements are on the same line.
         -->
             <div class="toggle_note_input header_button"><i class="fa fa-plus-circle"></i></div>
-            <span class="app_title" data-l10n-id="app_title">APP TITLE</span>            
+            <span class="app_title" data-l10n-id="app_title">Notes</span>            
         </header>
         <section class="note_input_section" style="display: none;">
             <input type="text" class="note_input note_title_add" placeholder="Note title">
