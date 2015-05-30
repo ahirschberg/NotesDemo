@@ -235,17 +235,6 @@ var new_note_disp_ui_obj = function (args) {
     var $populate_note_data_element = function (note_obj) {
         var $note_data = $('<div class="note_data"></div>');
         
-        // function to apply CSS classes for empty title and body elements
-        var apply_empty_classes = function ($root_element, note_obj) {
-            var $title = $root_element.find('.note_title');
-            note_obj.title ? $title.removeClass('note_title_empty') : $title.addClass('note_title_empty');
-
-            var $body = $root_element.find('.note_body');
-            note_obj.body ? $body.removeClass('note_body_empty') : $body.addClass('note_body_empty');
-
-            return $root_element;
-        };
-        
         // append note title
         $note_data.append(
             '<h2 class="note_title">' +
@@ -258,25 +247,28 @@ var new_note_disp_ui_obj = function (args) {
             (note_obj.body || '') +
             '</p>');
         
-        return apply_empty_classes($note_data, note_obj);
+        return $note_data;
     };
     
     disp_ui_obj.append_note_to_list = function (note_obj, index) {
-        var $li = $('<li class="note_listing" id="note_' + index + '"></li>');
+        var $li = $('<li/>', {
+            class: 'note_listing',
+            id: ('note_' + index)
+        });
 
         // append trash button
-        var $trash = $('<div class="notes_button notes_trash_button"><i class="fa fa-trash"></i></div>')
-            .click(trash_click_fn);
-        $li.append($trash);
+        var $trash = $('<div/>', {
+            class: 'notes_button notes_trash_button',
+            html: '<i class="fa fa-trash"></i>', // put a font-awesome icon inside the trash div
+            click: trash_click_fn
+        }).appendTo($li);
 
         // append edit button
-        var $edit = $(
-            '<div class="notes_button notes_edit_button">' +
-            '<i class="fa fa-pencil"></i>' +
-            '</div>')
-            .click(edit_click_fn);
-        $li.append($edit);
-        
+        var $edit = $('<div/>', {
+            class: 'notes_button notes_edit_button',
+            html: '<i class="fa fa-pencil"></i>',
+            click: edit_click_fn
+        }).appendTo($li);
         
         $note_data = $populate_note_data_element(note_obj);
         $li.append($note_data);
