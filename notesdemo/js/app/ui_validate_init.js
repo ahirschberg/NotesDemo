@@ -1,0 +1,19 @@
+define(['jquery'], function ($) {
+    return function (selectors) {
+        return {
+            get_note_obj_from_inputs: function () {
+                return {
+                    title: $(selectors.title_input).val(),
+                    body:  $(selectors.body_input).val(),
+                    isBlank: function () {
+                        return !(this.title || this.body); // empty string is falsy
+                    }
+                };
+            },
+            clear_note_inputs: function () {
+                $(selectors.title_input).val('');
+                $(selectors.body_input).val('');
+            }
+        };
+    };
+});

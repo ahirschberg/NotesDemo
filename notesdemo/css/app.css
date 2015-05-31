@@ -1,19 +1,14 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: "Trebuchet MS", Helvetica, sans-serif
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 h1 {
   margin: 0 0 1rem 0;
 }
 
-p {
-  font-size: inherit;
-}
-
 body {
-    font-size: 1rem;
     background: #fff;
 }
 
@@ -90,20 +85,30 @@ ul.notes_container {
     padding: 0;
     margin: 0;
 }
+ul.notes_container:empty:before {
+    display: block;
+    text-align: center;
+    margin: 20px;
+
+    color: #4F5454;
+    font-style: italic;
+    font-size: 1.2rem;
+    content: "No notes. Click the + button to get started!";
+}
 
 .note_listing {
     background-color: #E1E9D1;
     padding: 10px;
-    border-left: 5px solid #33C1F0;
+    border-left: 5px solid #AA81B0;  /* also fills 3n+1 element */
 }
-.note_listing:nth-child(4n + 0) {
-    border-left-color: rgb(239, 109, 39); /* matches header border-bottom */
+.note_listing:nth-child(3n + 2) {
+    border-color: #F6A031;
 }
-.note_listing:nth-child(4n + 1) {
-    border-left-color: #F89847;
+.note_listing:nth-child(3n + 3) {
+    border-color: #5EBCDB;
 }
-.note_listing:nth-child(4n + 2) {
-    border-left-color: #e447f8;
+.note_listing:nth-child(2n + 1) {
+    background-color: #D8E3C2;
 }
 
 .note_title { /* it's interesting that this auto sets width to work with the trash button */
@@ -112,7 +117,7 @@ ul.notes_container {
     overflow: hidden;
     text-overflow: ellipsis; 
 }
-.note_title_empty:before {
+.note_title:empty:before {
     color: #4F5454;
     font-style: italic;
     content: "No Title :(";
@@ -122,7 +127,7 @@ ul.notes_container {
     margin: 0;
     color: #242424;
 }
-.note_body_empty:before {
+.note_body:empty:before {
     color: #535353;
     font-style: italic;
     content: "No text :(";

@@ -10,20 +10,14 @@
     "128": "/img/icons/icon128x128.png"
   },
   "developer": {
-    "name": "Your name",
-    "url": "http://example.com"
+    "name": "Alex Hirschberg",
+    "url": "https://github.com/ahirschberg/NotesDemo"
   },
   "type": "privileged",
   "permissions": {},
   "installs_allowed_from": [
     "*"
   ],
-  "locales": {
-    "es": {
-      "name": "Aplicación vacía privilegiada",
-      "description": "Una plantilla con la mínima estructura",
-      "permissions": {}
-    }
-  },
+  "locales": { },
   "default_locale": "en"
 }
