@@ -17,12 +17,12 @@ require.config({
 });
 
 require(
-    ['jquery', 'app/notes_storage_manager', 'app/notes_ui_manager_init'],
-    function ($, notes_storage, notes_ui_manager_init) {
+    ['jquery', 'app/notes_storage_manager', 'app/notes_ui_manager'],
+    function ($, notes_storage, notes_ui_manager) {
         'use strict';
         
         $(document).ready(function () {
-            var notes_ui = notes_ui_manager_init(notes_storage),
+            var notes_ui = notes_ui_manager,
                 notes_store = notes_storage.notes_store;
             
             Object.keys(notes_store).forEach(function (key) {
