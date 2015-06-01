@@ -26,7 +26,7 @@ require(
                 notes_store = notes_storage.notes_store;
             
             Object.keys(notes_store).forEach(function (key) {
-                notes_ui.note_disp.append_note_to_list(notes_store[key], key);
+                notes_ui.notes_view.append_note_to_list(notes_store[key], key);
             });
 
             // ASK should this be moved into the note_add_ui object?
