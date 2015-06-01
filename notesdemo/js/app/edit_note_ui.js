@@ -39,11 +39,12 @@ define(['jquery', 'app/ui_validate_init'], function ($, ui_validate_init) {
                 $('<textarea class="note_input note_body_edit"/>')
                     .val(note_obj.body)
                     .appendTo($edit_div);
+                $edit_div.append('<br/>');
                 $('<button class="submit_note_edit">Done</button>')
                     .click(create_note_edit_submit_onclick(note_index, notes_storage_mgr, notes_disp_ui))
                     .appendTo($edit_div);
                 $('<button class="">Cancel</button>')
-                    .click(function () { remove_edit_ui() })
+                    .click(remove_edit_ui)
                     .appendTo($edit_div);
 
                 $note_element.children().hide();
