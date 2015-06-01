@@ -20,6 +20,7 @@ require(
     ['jquery', 'app/notes_storage_manager', 'app/notes_ui_manager_init'],
     function ($, notes_storage, notes_ui_manager_init) {
         'use strict';
+        
         $(document).ready(function () {
             var notes_ui = notes_ui_manager_init(notes_storage),
                 notes_store = notes_storage.notes_store;
@@ -28,6 +29,7 @@ require(
                 notes_ui.note_disp.append_note_to_list(notes_store[key], key);
             });
 
+            // ASK should this be moved into the note_add_ui object?
             var submit_func = notes_ui.note_add_input
                 .create_note_submit_onclick(notes_ui);
             $('.submit_note').click(function () {
