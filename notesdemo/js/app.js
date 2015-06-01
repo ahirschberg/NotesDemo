@@ -1,5 +1,4 @@
-'use strict'
-
+var NOTESDEMO = {};
 require.config({
     //By default load any module IDs from js/lib
     baseUrl: 'js/lib',
@@ -8,6 +7,9 @@ require.config({
     //config is relative to the baseUrl, and
     //never includes a ".js" extension since
     //the paths config could be for a directory.
+    //Also, bind the jQuery library to path 'jquery',  
+    //as this fixes some issue with mixing
+    //jQuery and require.js
     paths: {
         jquery: 'jquery-2.1.4.min',
         app: '../app'
@@ -15,29 +17,35 @@ require.config({
 });
 
 require(
- ['jquery', 'app/notes_storage_manager', 'app/notes_ui_manager_init'],
- function ($, notes_storage, notes_ui_manager_init) {
+    ['jquery', 'app/notes_storage_manager', 'app/notes_ui_manager_init'],
+    function ($, notes_storage, notes_ui_manager_init) {
+        'use strict';
+        $(document).ready(function () {
+            var notes_ui = notes_ui_manager_init(notes_storage),
+                notes_store = notes_storage.notes_store;
+            
+            Object.keys(notes_store).forEach(function (key) {
+                notes_ui.note_disp.append_note_to_list(notes_store[key], key);
+            });
 
-    $(document).ready(function () {  
-        console.log('document is ready!');
-        var notes_ui = notes_ui_manager_init({notes_storage_mgr: notes_storage});
-
-        var notes_store = notes_storage.notes_store;
-        Object.keys(notes_store).forEach (function (key) {
-            notes_ui.note_disp.append_note_to_list(notes_store[key], key);
+            var submit_func = notes_ui.note_add_input
+                .create_note_submit_onclick(notes_ui);
+            $('.submit_note').click(function () {
+                submit_func.apply(this, arguments);
+            });
         });
-
-        var submit_func = notes_ui.note_add_input
-            .create_note_submit_onclick(notes_ui);
-        $('.submit_note').click(function () {
-            submit_func.apply(this, arguments)
-        });
-    });
-});
-
-// ideally this would not be a global function, but oh well...
-function debug_add_notes(n) {
-    for (var i = 1; i <= n; i++) {
-        NOTESDEMO.notes_ui_manager.new_note({title: ('generated note ' + i), body: ('I can do it! I can do it ' + i + ' times!')});
     }
-}
+);
+
+// add a compact function to Array that removes falsy values,
+// and prefix with 'notesdemo_' to avoid namespace conflict
+Array.prototype.notesdemo_compact = function () {
+    'use strict';
+    for (var i = 0; i < this.length; i++) {
+        if (!this[i]) {
+            this.splice(i, 1);
+            i--;
+        }
+    }
+    return this;
+};

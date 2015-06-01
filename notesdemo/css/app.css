@@ -69,7 +69,7 @@ header {
 
 .note_input {
     width: 95%;
-    font:  12pt "Arial Black", Gadget, sans-serif;
+    font:  12pt "Arial", Gadget, sans-serif;
 }
 
 .note_title_add, note_title_edit {

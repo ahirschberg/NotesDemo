@@ -1,4 +1,5 @@
 define(['jquery'], function ($) {
+    "use strict"; 
     return function (selectors) {
         return {
             get_note_obj_from_inputs: function () {

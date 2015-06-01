@@ -1,16 +1,5 @@
 define(function () {
-    // TODO move this elsewhere
-    Array.prototype.compact = function() { // add a compact() function to array that removes falsy values
-      for (var i = 0; i < this.length; i++) {
-        if (!this[i]) {         
-          this.splice(i, 1);
-          i--;
-        }
-      }
-      return this;
-    };
-
-
+    "use strict";
     var notes_store = JSON.parse(localStorage.getItem('notes_store'));
     
     if (!notes_store) {
@@ -18,12 +7,12 @@ define(function () {
         notes_store = [];
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
     }
-    notes_store = notes_store.compact(); // compact is a custom function we added earlier
+    notes_store = notes_store.notesdemo_compact(); // notesdemo_compact is a custom function we added earlier, prefixed with notesdemo to avoid namespace collision.  Is this best practice?
     
     var write_store = function () {
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
-    }
-    var id_rxp = /note_(\d+)/;
+    },
+        id_rxp = /note_(\d+)/;
     
     return {
         add_note: function (note_obj) {

@@ -1,6 +1,7 @@
 define(['jquery', 'app/ui_validate_init'], function ($, ui_validate_init) {
-    // TODO ask kevin what he thinks about this
-    var toggle_note_input = function () {
+    "use strict";    
+    // ASK kevin what he thinks about this
+    var toggle_note_input = function () {        
         var $input_area = $('.note_input_section');
         $input_area.toggle();
         update_new_note_button($input_area.css('display') != 'none');

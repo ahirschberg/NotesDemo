@@ -1,4 +1,5 @@
 define(['jquery', 'app/ui_validate_init'], function ($, ui_validate_init) {
+    "use strict"; 
     var input_validate = ui_validate_init({title_input: '.note_title_edit', body_input: '.note_body_edit'});
     var remove_edit_ui = function () {
         $('.edit_note').each(function () {
@@ -31,7 +32,7 @@ define(['jquery', 'app/ui_validate_init'], function ($, ui_validate_init) {
                 var note_index = notes_storage_mgr.get_index_from_id($note_element.attr('id'));
                 var note_obj = notes_storage_mgr.retrieve_note(note_index);
 
-                var $edit_div = $('<div class="edit_note" />');
+                var $edit_div = $('<div class="edit_note"/>');
                 $('<input type="text" class="note_input note_title_edit">')
                     .val(note_obj.title)
                     .appendTo($edit_div);
@@ -40,6 +41,9 @@ define(['jquery', 'app/ui_validate_init'], function ($, ui_validate_init) {
                     .appendTo($edit_div);
                 $('<button class="submit_note_edit">Done</button>')
                     .click(create_note_edit_submit_onclick(note_index, notes_storage_mgr, notes_disp_ui))
+                    .appendTo($edit_div);
+                $('<button class="">Cancel</button>')
+                    .click(function () { remove_edit_ui() })
                     .appendTo($edit_div);
 
                 $note_element.children().hide();
