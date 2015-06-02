@@ -12,7 +12,7 @@ define(
         };
 
         // Debug function to add a set amount of notes
-        NOTESDEMO.dbg_add_notes = function (n) {
+        NOTESDEMO.add_notes = function (n) {
             for (var i = 1; i <= n; i++) {
                 ui_handlers.new_note({
                     title: ('generated note ' + i),
