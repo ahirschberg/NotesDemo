@@ -50,7 +50,7 @@ header {
     width: 30px;
     float: right;
     border-radius: 50%;
-    margin: 1px;
+    margin: 2px;
     
     cursor: pointer;
     -moz-user-select: none;
@@ -85,6 +85,8 @@ ul.notes_container {
     padding: 0;
     margin: 0;
 }
+
+/* This is one of those CSS 'sweetening' things, can be left until the end */
 ul.notes_container:empty:before {
     display: block;
     text-align: center;
@@ -101,6 +103,8 @@ ul.notes_container:empty:before {
     padding: 10px;
     border-left: 5px solid #AA81B0;  /* also fills 3n+1 element */
 }
+
+/* these :nth-child classes can be left until the end as well */
 .note_listing:nth-child(3n + 2) {
     border-color: #F6A031;
 }
