@@ -29,7 +29,6 @@ require(
                 notes_ui.notes_view.append_note_to_list(notes_store[key], key);
             });
 
-            // ASK should this be moved into the note_add_ui object?
             var submit_func = notes_ui.note_add_input
                 .create_note_submit_onclick(notes_ui);
             $('.submit_note').click(function () {

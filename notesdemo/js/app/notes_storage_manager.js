@@ -1,19 +1,17 @@
 define(function () {
     "use strict";
     var notes_store = JSON.parse(localStorage.getItem('notes_store'));
-    
     if (!notes_store) {
         console.warn('notes_store could not be retrieved from localStorage, defaulting to [].');
         notes_store = [];
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
     }
-    notes_store = notes_store.notesdemo_compact(); // notesdemo_compact is a custom function we added earlier, prefixed with notesdemo to avoid namespace collision.  Is this best practice?
+    notes_store = notes_store.notesdemo_compact(); // notesdemo_compact is a custom function we added earlier, prefixed with notesdemo to avoid namespace collision.
     
     var write_store = function () {
         localStorage.setItem('notes_store', JSON.stringify(notes_store));
     },
         id_rxp = /note_(\d+)/;
-    
     return {
         add_note: function (note_obj) {
             var index = notes_store.length;
@@ -35,7 +33,7 @@ define(function () {
         },
         get_index_from_id: function (id) {
             var match = id_rxp.exec(id);
-            return parseInt(match[1]);
+            return parseInt(match[1], 10);
         },
         notes_store: notes_store
     };

@@ -1,7 +1,7 @@
 define(
-    ['jquery', 'app/edit_note_ui', 'app/notes_storage_manager'], 
+    ['jquery', 'app/edit_note_ui', 'app/notes_storage_manager'],
     function ($, edit_note_ui, notes_storage_mgr) {
-        "use strict"; 
+        "use strict";
         var disp_ui_obj = {};
 
         var trash_click_fn = function () {
@@ -10,7 +10,7 @@ define(
 
             console.log('deleting note with index ' + note_index);
             notes_storage_mgr.delete_note(note_index);
-            $note_element.fadeOut("fast", function() {
+            $note_element.fadeOut("fast", function () {
                 $(this).remove();
             });
         };
@@ -23,7 +23,7 @@ define(
                 (note_obj.title || '') +
                 '</h2>');
             $note_data.append(
-                '<p class="note_body">' + 
+                '<p class="note_body">' +
                 (note_obj.body || '') +
                 '</p>');
             return $note_data;
@@ -43,27 +43,28 @@ define(
             });
 
             // append trash button
-            var $trash = $('<div/>', {
+            $('<div/>', {
                 class: 'notes_button notes_trash_button',
                 html: '<i class="fa fa-trash"></i>', // put a font-awesome icon inside the trash div
                 click: trash_click_fn
             }).appendTo($li);
 
             // append edit button
-            var $edit = $('<div/>', {
+            $('<div/>', {
                 class: 'notes_button notes_edit_button',
                 html: '<i class="fa fa-pencil"></i>',
                 click: edit_click_fn
             }).appendTo($li);
 
-            var $note_data = $generate_note_data_element(note_obj);
-            $li.append($note_data);
+            $li.append(
+                $generate_note_data_element(note_obj)
+            );
 
             // add to the DOM inside the notes list
             $li.prependTo('.notes_container');
             console.log('Appended note with index ' + index);
         };
 
-        return disp_ui_obj;    
+        return disp_ui_obj;
     }
 );
