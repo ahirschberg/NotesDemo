@@ -1,6 +1,6 @@
 define(
-    ['app/add_note_ui', 'app/generate_notes_view', 'app/notes_storage_manager'],
-    function (add_note_ui, generate_notes_view, notes_storage_mgr) {
+    ['app/notes_storage_manager', 'app/add_note_ui', 'app/generate_notes_view'],
+    function (notes_storage_mgr, add_note_ui, generate_notes_view) {
         "use strict";
         var ui_handlers = {
             note_add_input: add_note_ui,

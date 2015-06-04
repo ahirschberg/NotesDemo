@@ -41,29 +41,6 @@ header {
     margin-right: 10px;
 }
 
-.notes_button {
-    text-align: center;
-    line-height: 28px;
-    font-size: 20px;
-
-    height: 30px;
-    width: 30px;
-    float: right;
-    border-radius: 50%;
-    margin: 2px;
-    
-    cursor: pointer;
-    -moz-user-select: none;
-}
-
-.notes_trash_button {
-    border: 2px solid rgb(40, 133, 242);
-}
-
-.notes_edit_button {
-    border: 2px solid #EA5F48;
-}
-
 .note_input_section {
     padding: 5px;
     background-color: #F8C272;
@@ -87,6 +64,8 @@ ul.notes_container {
     padding: 0;
     margin: 0;
 }
+
+/* INITIAL CSS FILE SHOULD STOP HERE */
 
 /* Chris -- This is one of those CSS 'sweetening' things, can be left until the end */
 ul.notes_container:empty:before {
@@ -138,4 +117,27 @@ ul.notes_container:empty:before {
     color: #535353;
     font-style: italic;
     content: "No text :(";
+}
+
+.notes_button {
+    text-align: center;
+    line-height: 28px;
+    font-size: 20px;
+
+    height: 30px;
+    width: 30px;
+    float: right;
+    border-radius: 50%;
+    margin: 2px;
+    
+    cursor: pointer;
+    -moz-user-select: none;
+}
+
+.notes_trash_button {
+    border: 2px solid rgb(40, 133, 242);
+}
+
+.notes_edit_button {
+    border: 2px solid #EA5F48;
 }

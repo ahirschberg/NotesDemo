@@ -21,6 +21,9 @@ require(
     function ($, notes_storage, notes_ui_manager) {
         'use strict';
         
+        NOTESDEMO.notes_storage = notes_storage;
+        NOTESDEMO.notes_ui_manager = notes_ui_manager;
+        
         $(document).ready(function () {
             var notes_ui = notes_ui_manager,
                 notes_store = notes_storage.notes_store;
